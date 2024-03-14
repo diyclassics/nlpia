@@ -5,9 +5,30 @@
 dataset1.0 is in files like: PPE1.rar PPE2.zip PPE3.zip PP4.7zip
 dataset2.0 is in gs:/Buckets/safety_monitoring/data/obj/supplemental/"""
 from __future__ import print_function, unicode_literals, division, absolute_import
-from builtins import (bytes, dict, int, list, object, range, str,  # noqa
-    ascii, chr, hex, input, next, oct, open, pow, round, super, filter, map, zip)
+from builtins import (
+    bytes,
+    dict,
+    int,
+    list,
+    object,
+    range,
+    str,  # noqa
+    ascii,
+    chr,
+    hex,
+    input,
+    next,
+    oct,
+    open,
+    pow,
+    round,
+    super,
+    filter,
+    map,
+    zip,
+)
 from future import standard_library
+
 standard_library.install_aliases()  # noqa
 from past.builtins import basestring
 
@@ -26,16 +47,14 @@ from nlpia.constants import BASE_DIR, DATA_PATH, BIGDATA_PATH, BOOK_PATH  # noqa
 from nlpia.constants import HTML_TAGS, EOL
 from nlpia.constants import tqdm, no_tqdm
 
-try:
-    np = pd.np
-except ImportError:
-    import numpy as np  # noqa
+import numpy as np
+
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
 def wc(f, verbose=False, nrows=None):
-    r""" Count lines in a text file
+    r"""Count lines in a text file
 
     References:
         https://stackoverflow.com/q/845058/623735
@@ -47,7 +66,7 @@ def wc(f, verbose=False, nrows=None):
     7037
     """
     tqdm_prog = tqdm if verbose else no_tqdm
-    with ensure_open(f, mode='r') as fin:
+    with ensure_open(f, mode="r") as fin:
         for i, line in tqdm_prog(enumerate(fin)):
             if nrows is not None and i >= nrows - 1:
                 break
@@ -56,7 +75,7 @@ def wc(f, verbose=False, nrows=None):
 
 
 def ensure_str(s):
-    r""" Ensure that s is a str and not a bytes (.decode() if necessary)
+    r"""Ensure that s is a str and not a bytes (.decode() if necessary)
 
     >>> ensure_str(b"I'm 2. When I grow up I want to be a str!")
     "I'm 2. When I grow up I want to be a str!"
@@ -72,7 +91,7 @@ def ensure_str(s):
 
 
 def ls(path, force=False):
-    """ bash `ls -a`: List both file paths or directory contents (files and directories)
+    """bash `ls -a`: List both file paths or directory contents (files and directories)
 
     >>> ls('.')
     [...]
@@ -85,7 +104,7 @@ def ls(path, force=False):
     True
     """
     path = expand_filepath(path)
-    log.debug('path={}'.format(path))
+    log.debug("path={}".format(path))
     if os.path.isfile(path):
         return path
     elif os.path.isdir(path):
@@ -99,7 +118,7 @@ def ls(path, force=False):
 
 
 def ls_a(path, force=False):
-    """ bash `ls -a`: List both file paths or directory contents (files and directories)
+    """bash `ls -a`: List both file paths or directory contents (files and directories)
 
     >>> path = ls(__file__)
     >>> path.endswith(os.path.join('nlpia', 'futil.py'))
@@ -109,7 +128,7 @@ def ls_a(path, force=False):
 
 
 def rm_r(path, force=False):
-    """ bash `rm -r`: Recursively remove dirpath. If `force==True`, don't raise exception if path doesn't exist.
+    """bash `rm -r`: Recursively remove dirpath. If `force==True`, don't raise exception if path doesn't exist.
 
     >>> rm_r('/tmp/nlpia_dir_that_doesnt_exist_3.141591234/', force=True)
     >>> rm_r('/tmp/nlpia_dir_that_doesnt_exist_3.141591234/')
@@ -118,7 +137,7 @@ def rm_r(path, force=False):
     FileNotFoundError: [Errno 2] No such file or directory: '/tmp/nlpia_dir_that_doesnt_exist_3.141591234'
     """
     path = expand_filepath(path)
-    log.debug('path={}'.format(path))
+    log.debug("path={}".format(path))
     if os.path.isfile(path):
         return os.remove(path)
     elif os.path.isdir(path):
@@ -148,7 +167,7 @@ def rm_r(path, force=False):
 
 
 def rm_rf(path):
-    """ bash `rm -rf`: Recursively remove dirpath. Don't raise exception if path doesn't exist.
+    """bash `rm -rf`: Recursively remove dirpath. Don't raise exception if path doesn't exist.
 
     >>> rm_rf('/tmp/nlpia_dir_that_doesnt_exist_3.141591234/')
     """
@@ -156,20 +175,21 @@ def rm_rf(path):
 
 
 def find_data_path(path):
-    for fullpath in [path,
-                     os.path.join(DATA_PATH, path),
-                     os.path.join(BIGDATA_PATH, path),
-                     os.path.join(BASE_DIR, path),
-                     os.path.expanduser(os.path.join('~', path)),
-                     os.path.abspath(os.path.join('.', path))
-                     ]:
+    for fullpath in [
+        path,
+        os.path.join(DATA_PATH, path),
+        os.path.join(BIGDATA_PATH, path),
+        os.path.join(BASE_DIR, path),
+        os.path.expanduser(os.path.join("~", path)),
+        os.path.abspath(os.path.join(".", path)),
+    ]:
         if os.path.exists(fullpath):
             return fullpath
     return None
 
 
 def expand_filepath(filepath):
-    """ Expand any '~', '.', '*' variables in filepath.
+    """Expand any '~', '.', '*' variables in filepath.
 
     See also: pugnlp.futil.expand_path
 
@@ -179,8 +199,8 @@ def expand_filepath(filepath):
     return os.path.abspath(os.path.expandvars(os.path.expanduser(filepath)))
 
 
-def ensure_open(f, mode='r'):
-    r""" Return a file pointer using gzip.open if filename ends with .gz otherwise open()
+def ensure_open(f, mode="r"):
+    r"""Return a file pointer using gzip.open if filename ends with .gz otherwise open()
 
     TODO: try to read a gzip rather than relying on gz extension, likewise for zip and other formats
     TODO: monkey patch the file so that .write_bytes=.write and .write writes both str and bytes
@@ -218,15 +238,15 @@ def ensure_open(f, mode='r'):
     if isinstance(f, basestring):
         if len(f) <= MAX_LEN_FILEPATH:
             f = find_filepath(f) or f
-            if f and (not hasattr(f, 'seek') or not hasattr(f, 'readlines')):
-                if f.lower().endswith('.gz'):
+            if f and (not hasattr(f, "seek") or not hasattr(f, "readlines")):
+                if f.lower().endswith(".gz"):
                     return gzip.open(f, mode=mode)
                 return open(f, mode=mode)
             f = fin  # reset path in case it is the text that needs to be opened with StringIO
         else:
             f = io.StringIO(f)
-    elif f and getattr(f, 'closed', None):
-        if hasattr(f, '_write_gzip_header'):
+    elif f and getattr(f, "closed", None):
+        if hasattr(f, "_write_gzip_header"):
             return gzip.open(f.name, mode=mode)
         else:
             return open(f.name, mode=mode)
@@ -234,7 +254,7 @@ def ensure_open(f, mode='r'):
 
 
 def normalize_ext(filepath):
-    """ Convert file extension(s) to normalized form, e.g. '.tgz' -> '.tar.gz'
+    """Convert file extension(s) to normalized form, e.g. '.tgz' -> '.tar.gz'
 
     Normalized extensions are ordered in reverse order of how they should be processed.
     Also extensions are ordered in order of decreasing specificity/detail.
@@ -255,30 +275,34 @@ def normalize_ext(filepath):
     >>> normalize_ext('glove.42B.300d.zip')
     'glove.42B.300d.glove.txt.zip'
     """
-    mapping = tuple(reversed((
-        ('.tgz', '.tar.gz'),
-        ('.bin.gz', '.w2v.bin.gz'),
-        ('.6B.zip', '.6b.glove.txt.zip'),
-        ('.42B.zip', '.42b.glove.txt.zip'),
-        ('.27B.zip', '.27b.glove.txt.zip'),
-        ('.300d.zip', '.300d.glove.txt.zip'),
-    )))
+    mapping = tuple(
+        reversed(
+            (
+                (".tgz", ".tar.gz"),
+                (".bin.gz", ".w2v.bin.gz"),
+                (".6B.zip", ".6b.glove.txt.zip"),
+                (".42B.zip", ".42b.glove.txt.zip"),
+                (".27B.zip", ".27b.glove.txt.zip"),
+                (".300d.zip", ".300d.glove.txt.zip"),
+            )
+        )
+    )
     if not isinstance(filepath, str):
         return [normalize_ext(fp) for fp in filepath]
-    if '~' == filepath[0] or '$' in filepath:
+    if "~" == filepath[0] or "$" in filepath:
         filepath = expand_filepath(filepath)
     fplower = filepath.lower()
     for ext, newext in mapping:
-        r = ext.lower().replace('.', r'\.') + r'$'
-        r = r'^[.]?([^.]*)\.([^.]{1,10})*' + r
-        log.debug(f'regex pattern = {r}, string={filepath}')
+        r = ext.lower().replace(".", r"\.") + r"$"
+        r = r"^[.]?([^.]*)\.([^.]{1,10})*" + r
+        log.debug(f"regex pattern = {r}, string={filepath}")
         if re.match(r, fplower) and not fplower.endswith(newext):
-            filepath = filepath[:-len(ext)] + newext
+            filepath = filepath[: -len(ext)] + newext
     return filepath
 
 
 def normalize_filepath(filepath):
-    r""" Lowercase the filename and ext, expanding extensions like .tgz to .tar.gz.
+    r"""Lowercase the filename and ext, expanding extensions like .tgz to .tar.gz.
 
     >>> normalize_filepath('/Hello_World.txt\n')
     'hello_world.txt'
@@ -286,12 +310,15 @@ def normalize_filepath(filepath):
     'NLPIA/src/nlpia/bigdata/goog new 300dneg.bin.gz'
     """
     filename = os.path.basename(filepath)
-    dirpath = filepath[:-len(filename)]
-    cre_controlspace = re.compile(r'[\t\r\n\f]+')
-    new_filename = cre_controlspace.sub('', filename)
+    dirpath = filepath[: -len(filename)]
+    cre_controlspace = re.compile(r"[\t\r\n\f]+")
+    new_filename = cre_controlspace.sub("", filename)
     if not new_filename == filename:
-        log.warning('Stripping whitespace from filename: {} => {}'.format(
-            repr(filename), repr(new_filename)))
+        log.warning(
+            "Stripping whitespace from filename: {} => {}".format(
+                repr(filename), repr(new_filename)
+            )
+        )
         filename = new_filename
     filename = filename.lower()
     filename = normalize_ext(filename)
@@ -302,9 +329,19 @@ def normalize_filepath(filepath):
 
 
 def find_filepath(
-        filename,
-        basepaths=(os.path.curdir, DATA_PATH, BIGDATA_PATH, BASE_DIR, '~', '~/Downloads', os.path.join('/', 'tmp'), '..')):
-    """ Given a filename or path see if it exists in any of the common places datafiles might be
+    filename,
+    basepaths=(
+        os.path.curdir,
+        DATA_PATH,
+        BIGDATA_PATH,
+        BASE_DIR,
+        "~",
+        "~/Downloads",
+        os.path.join("/", "tmp"),
+        "..",
+    ),
+):
+    """Given a filename or path see if it exists in any of the common places datafiles might be
 
     >>> p = find_filepath('iq_test.csv')
     >>> p == expand_filepath(os.path.join(DATA_PATH, 'iq_test.csv'))
@@ -326,7 +363,7 @@ def find_filepath(
 def update_dict_types(d, update_keys=True, update_values=True, typ=(int,)):
     di = {}
     if not isinstance(typ, tuple):
-        typ = (typ, )
+        typ = (typ,)
     for k, v in d.items():
         ki, vi = k, v
         for t in typ:  # stop coercing type when the first conversion works
@@ -346,19 +383,19 @@ def update_dict_types(d, update_keys=True, update_values=True, typ=(int,)):
 
 
 def read_json(filepath, intkeys=True, intvalues=True):
-    """ read text from filepath (`open(find_filepath(expand_filepath(fp)))`) then json.loads()
+    """read text from filepath (`open(find_filepath(expand_filepath(fp)))`) then json.loads()
 
     >>> read_json('HTTP_1.1  Status Code Definitions.html.json')
     {'100': 'Continue',
      '101': 'Switching Protocols',...
     """
-    d = json.load(ensure_open(find_filepath(filepath), mode='rt'))
+    d = json.load(ensure_open(find_filepath(filepath), mode="rt"))
     d = update_dict_types(d, update_keys=intkeys, update_values=intvalues)
     return d
 
 
-def looks_like_index(series, index_names=('Unnamed: 0', 'pk', 'index', '')):
-    """ Tries to infer if the Series (usually leftmost column) should be the index_col
+def looks_like_index(series, index_names=("Unnamed: 0", "pk", "index", "")):
+    """Tries to infer if the Series (usually leftmost column) should be the index_col
 
     >>> looks_like_index(pd.Series(np.arange(100)))
     True
@@ -370,9 +407,9 @@ def looks_like_index(series, index_names=('Unnamed: 0', 'pk', 'index', '')):
     if (series == np.arange(len(series))).all():
         return True
     if (
-        (series.index == np.arange(len(series))).all() and
-        str(series.dtype).startswith('int') and
-        (series.count() == len(series))
+        (series.index == np.arange(len(series))).all()
+        and str(series.dtype).startswith("int")
+        and (series.count() == len(series))
     ):
         return True
     return False
@@ -389,28 +426,33 @@ def read_csv(*args, **kwargs):
     3                                       That was it.            0
     4                I was never really told what to do.            0
     """
-    kwargs.update({'low_memory': False})
+    kwargs.update({"low_memory": False})
     if isinstance(args[0], pd.DataFrame):
         df = args[0]
     else:
-        log.info('Reading CSV with `read_csv(*{}, **{})`...'.format(args, kwargs))
+        log.info("Reading CSV with `read_csv(*{}, **{})`...".format(args, kwargs))
         df = pd.read_csv(*args, **kwargs)
     if looks_like_index(df[df.columns[0]]):
         df = df.set_index(df.columns[0], drop=True)
-        if df.index.name in ('Unnamed: 0', ''):
+        if df.index.name in ("Unnamed: 0", ""):
             df.index.name = None
-    if ((str(df.index.values.dtype).startswith('int') and (df.index.values > 1e9 * 3600 * 24 * 366 * 10).any()) or
-            (str(df.index.values.dtype) == 'object')):
+    if (
+        str(df.index.values.dtype).startswith("int")
+        and (df.index.values > 1e9 * 3600 * 24 * 366 * 10).any()
+    ) or (str(df.index.values.dtype) == "object"):
         try:
             df.index = pd.to_datetime(df.index)
         except (ValueError, TypeError, pd.errors.OutOfBoundsDatetime):
-            log.info('Unable to coerce DataFrame.index into a datetime using pd.to_datetime([{},...])'.format(
-                df.index.values[0]))
+            log.info(
+                "Unable to coerce DataFrame.index into a datetime using pd.to_datetime([{},...])".format(
+                    df.index.values[0]
+                )
+            )
     return df
 
 
 def read_text(forfn, nrows=None, verbose=True):
-    r""" Read all the lines (up to nrows) from a text file or txt.gz file
+    r"""Read all the lines (up to nrows) from a text file or txt.gz file
 
     >>> fn = os.path.join(DATA_PATH, 'mavis-batey-greetings.txt')
     >>> len(read_text(fn, nrows=3))
@@ -423,14 +465,23 @@ def read_text(forfn, nrows=None, verbose=True):
         for i, line in enumerate(tqdm_prog(f, total=nrows)):
             if i >= len(lines):
                 break
-            lines[i] = ensure_str(line).rstrip('\n').rstrip('\r')
-        if all('\t' in line for line in lines):
-            num_tabs = [sum([1 for c in line if c == '\t']) for line in lines]
+            lines[i] = ensure_str(line).rstrip("\n").rstrip("\r")
+        if all("\t" in line for line in lines):
+            num_tabs = [sum([1 for c in line if c == "\t"]) for line in lines]
             del lines
             if all(i == num_tabs[0] for i in num_tabs):
                 f.seek(0)
-                return read_csv(f, sep='\t', header=None, nrows=nrows)
-        elif sum((1 for line in lines if any((tag.lower() in line.lower() for tag in HTML_TAGS)))
-                 ) / float(len(lines)) > .05:
+                return read_csv(f, sep="\t", header=None, nrows=nrows)
+        elif (
+            sum(
+                (
+                    1
+                    for line in lines
+                    if any((tag.lower() in line.lower() for tag in HTML_TAGS))
+                )
+            )
+            / float(len(lines))
+            > 0.05
+        ):
             return np.array(html2text(EOL.join(lines)).split(EOL))
     return lines
