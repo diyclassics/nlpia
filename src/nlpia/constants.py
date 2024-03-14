@@ -154,17 +154,17 @@ HIST_CONFIG = {
 }
 
 
-tld_iana = pd.read_csv(os.path.join(DATA_PATH, "tlds-from-iana.csv"), encoding="utf8")
-tld_iana = OrderedDict(
-    sorted(
-        zip(
-            (tld.strip().lstrip(".") for tld in tld_iana.domain),
-            [(sponsor.strip(), -1) for sponsor in tld_iana.sponsor],
-        ),
-        key=lambda x: len(x[0]),
-        reverse=True,
-    )
-)
+# tld_iana = pd.read_csv(os.path.join(DATA_PATH, "tlds-from-iana.csv"), encoding="utf8")
+# tld_iana = OrderedDict(
+#     sorted(
+#         zip(
+#             (tld.strip().lstrip(".") for tld in tld_iana.domain),
+#             [(sponsor.strip(), -1) for sponsor in tld_iana.sponsor],
+#         ),
+#         key=lambda x: len(x[0]),
+#         reverse=True,
+#     )
+# )
 # top 20 in Google searches per day
 # sorted by longest first so .com matches before .om (Oman)
 tld_popular = OrderedDict(
@@ -196,48 +196,48 @@ tld_popular = OrderedDict(
     )
 )
 
-uri_schemes_iana = sorted(
-    pd.read_csv(
-        os.path.join(DATA_PATH, "uri-schemes.xhtml.csv"), index_col=0
-    ).index.values,
-    key=lambda x: len(str(x)),
-    reverse=True,
-)
-uri_schemes_popular = [
-    "chrome-extension",
-    "example",
-    "content",
-    "bitcoin",
-    "telnet",
-    "mailto",
-    "https",
-    "gtalk",
-    "http",
-    "smtp",
-    "feed",
-    "udp",
-    "ftp",
-    "ssh",
-    "git",
-    "apt",
-    "svn",
-    "cvs",
-]
+# uri_schemes_iana = sorted(
+#     pd.read_csv(
+#         os.path.join(DATA_PATH, "uri-schemes.xhtml.csv"), index_col=0
+#     ).index.values,
+#     key=lambda x: len(str(x)),
+#     reverse=True,
+# )
+# uri_schemes_popular = [
+#     "chrome-extension",
+#     "example",
+#     "content",
+#     "bitcoin",
+#     "telnet",
+#     "mailto",
+#     "https",
+#     "gtalk",
+#     "http",
+#     "smtp",
+#     "feed",
+#     "udp",
+#     "ftp",
+#     "ssh",
+#     "git",
+#     "apt",
+#     "svn",
+#     "cvs",
+# ]
 
 # these may not all be the sames isinstance types, depending on the env
 FLOAT_TYPES = tuple(
-    [t for t in set(np.typeDict.values()) if t.__name__.startswith("float")] + [float]
+    [t for t in set(np.sctypeDict.values()) if t.__name__.startswith("float")] + [float]
 )
 FLOAT_DTYPES = tuple(set(np.dtype(typ) for typ in FLOAT_TYPES))
 INT_TYPES = tuple(
-    [t for t in set(np.typeDict.values()) if t.__name__.startswith("int")] + [int]
+    [t for t in set(np.sctypeDict.values()) if t.__name__.startswith("int")] + [int]
 )
 INT_DTYPES = tuple(set(np.dtype(typ) for typ in INT_TYPES))
 NUMERIC_TYPES = tuple(set(list(FLOAT_TYPES) + list(INT_TYPES)))
 NUMERIC_DTYPES = tuple(set(np.dtype(typ) for typ in NUMERIC_TYPES))
 
 DATETIME_TYPES = tuple(
-    [t for t in set(np.typeDict.values()) if t.__name__.startswith("datetime")]
+    [t for t in set(np.sctypeDict.values()) if t.__name__.startswith("datetime")]
     + [datetime.datetime, pd.to_datetime, pd.Timestamp]
 )
 DATE_TYPES = (datetime.datetime, datetime.date)
